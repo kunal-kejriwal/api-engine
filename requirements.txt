@@ -12,7 +12,7 @@ colorama==0.4.6
 cookiecutter==2.6.0
 Django==5.2.9
 django-filter==25.2
-django-tailwind==4.4.2
+django-tailwind==3.6.0
 django-vite==3.1.0
 djangorestframework==3.16.1
 djangorestframework_simplejwt==5.5.1
@@ -50,3 +50,4 @@ urllib3==2.6.2
 uvicorn==0.38.0
 watchfiles==1.1.1
 websockets==15.0.1
+

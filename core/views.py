@@ -41,44 +41,61 @@ def redirect_core(request):
 
 def signup_view(request):
     if request.method == "POST":
-        username = request.POST.get("username")
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        
-        if not username or not email or not password:
-            messages.error(request, "All fields are required.")
-            
+        username = request.POST.get("username", "").strip()
+        email = request.POST.get("email", "").strip()
+        password = request.POST.get("password", "").strip()
+
+        errors = []
+
+        if not username:
+            errors.append("Username is required.")
+
+        if not email:
+            errors.append("Email is required.")
+
+        if not password:
+            errors.append("Password is required.")
+
         if User.objects.filter(username=username).exists():
-            messages.error(request, "Username already exists.")
-            
+            errors.append("Username already exists. Please opt for a different username.")
+
         if User.objects.filter(email=email).exists():
-            messages.error(request, "An account with this email already exists.")
-            return redirect("signup")
+            errors.append("An account with this email already exists. Please opt for a different email.")
 
-        # if User.objects.filter(username=username).exists():
-        #     return render(
-        #         request,
-        #         "core/signup.html",
-        #         {"error": "Username already exists"},
-        #     )
-        
-        # if User.objects.filter(email=email).exists():
-        #     return Response({"message": "Account Exists"}, status=201)
+        # ⛔ STOP execution if errors exist
+        if errors:
+            return render(
+                request,
+                "core/signup.html",
+                {
+                    "errors": errors,
+                    "username": username,
+                    "email": email,
+                },
+            )
 
-        user = User.objects.create_user(
-            username=username,
-            email=email,
-            password=password,
-        )
+        try:
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password,
+            )
+        except IntegrityError:
+            return render(
+                request,
+                "core/signup.html",
+                {
+                    "errors": ["Something went wrong. Please try again."],
+                },
+            )
 
-        # 🔑 EXPLICIT profile creation (NO signals)
+        # Profile creation (FIXED)
         free_plan = Plan.objects.get(name="FREE")
-        profile = get_object_or_404(
-            UserProfile,
+        UserProfile.objects.create(
             user=user,
             plan=free_plan,
         )
-        
+
         token = EmailVerificationToken.objects.create(user=user)
         send_verification_email(user, token.token)
 

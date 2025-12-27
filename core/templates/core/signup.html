@@ -1,30 +1,159 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en" class="h-full bg-gray-900">
 <head>
-    <title>Signup</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body>
 
-<h2>Create Account</h2>
+<body class="h-full">
 
-{% if error %}
-<p style="color:red">{{ error }}</p>
-{% endif %}
+<div class="flex min-h-full">
+  <div class="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+    <div class="mx-auto w-full max-w-sm lg:w-96">
 
-<form method="POST">
-    {% csrf_token %}
+      <!-- Header -->
+      <div>
+        <img
+          src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
+          alt="Your Company"
+          class="h-10 w-auto"
+        />
+        <h2 class="mt-8 text-2xl/9 font-bold tracking-tight text-white">
+          Sign up to access TheAPIEngine
+        </h2>
+      </div>
 
-    <label>Username</label><br>
-    <input type="text" name="username" required><br><br>
+      <!-- 🔴 Error block -->
+      {% if errors %}
+        <div class="mt-6 rounded-md bg-red-500/15 p-4 outline outline-red-500/25">
+          <ul class="list-disc space-y-1 pl-5 text-sm text-red-200">
+            {% for error in errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
 
-    <label>Email</label><br>
-    <input type="email" name="email" required><br><br>
+      <!-- Form -->
+      <div class="mt-10">
+        <form method="POST" class="space-y-6">
+          {% csrf_token %}
 
-    <label>Password</label><br>
-    <input type="password" name="password" required><br><br>
+          <!-- Username -->
+          <div>
+            <label class="block text-sm/6 font-medium text-gray-100">
+              Username
+            </label>
+            <div class="mt-2">
+              <input
+                type="text"
+                name="username"
+                value="{{ username|default:'' }}"
+                required
+                autocomplete="username"
+                class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white
+                       outline-1 -outline-offset-1 outline-white/10
+                       placeholder:text-gray-500 focus:outline-2
+                       focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+              />
+            </div>
+          </div>
 
-    <button type="submit">Sign up</button>
-</form>
+          <!-- Email -->
+          <div>
+            <label class="block text-sm/6 font-medium text-gray-100">
+              Email
+            </label>
+            <div class="mt-2">
+              <input
+                type="email"
+                name="email"
+                value="{{ email|default:'' }}"
+                required
+                autocomplete="email"
+                class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white
+                       outline-1 -outline-offset-1 outline-white/10
+                       placeholder:text-gray-500 focus:outline-2
+                       focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+              />
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div>
+            <label class="block text-sm/6 font-medium text-gray-100">
+              Password
+            </label>
+            <div class="mt-2">
+              <input
+                type="password"
+                name="password"
+                required
+                autocomplete="new-password"
+                class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white
+                       outline-1 -outline-offset-1 outline-white/10
+                       placeholder:text-gray-500 focus:outline-2
+                       focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+              />
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <div>
+            <button
+              type="submit"
+              class="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5
+                     text-sm/6 font-semibold text-white hover:bg-indigo-400
+                     focus-visible:outline-2 focus-visible:outline-offset-2
+                     focus-visible:outline-indigo-500"
+            >
+              Create Account
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- Divider -->
+      <div class="mt-10">
+        <div class="relative">
+          <div aria-hidden="true" class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-700"></div>
+          </div>
+          <div class="relative flex justify-center text-sm/6 font-medium">
+            <span class="bg-gray-900 px-6 text-gray-300">
+              Or continue with
+            </span>
+          </div>
+        </div>
+
+        <!-- Social buttons (unchanged) -->
+        <div class="mt-6 grid grid-cols-2 gap-4">
+          <!-- Google -->
+          <a href="#" class="flex w-full items-center justify-center gap-3 rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white inset-ring inset-ring-white/5 hover:bg-white/20">
+            <span>Google</span>
+          </a>
+
+          <!-- GitHub -->
+          <a href="#" class="flex w-full items-center justify-center gap-3 rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white inset-ring inset-ring-white/5 hover:bg-white/20">
+            <span>GitHub</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Right image -->
+  <div class="relative hidden w-0 flex-1 lg:block">
+    <img
+      src="https://images.unsplash.com/photo-1496917756835-20cb06e75b4e"
+      alt=""
+      class="absolute inset-0 size-full object-cover"
+    />
+  </div>
+</div>
 
 </body>
 </html>

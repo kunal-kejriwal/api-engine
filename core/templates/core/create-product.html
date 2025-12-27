@@ -1,0 +1,192 @@
+{% extends "core/index.html" %}
+
+{% block content %}
+
+<!-- NAVBAR (GLOBAL) -->
+<header class="absolute inset-x-0 top-0 z-50">
+  {% include "core/navbar.html" %}
+</header>
+
+    <form method="POST" class="space-y-6 max-w-lg mx-auto">
+        {% csrf_token %}
+        <section class="py-32">
+            <div class="overflow-hidden rounded-md bg-gray-800/50 outline -outline-offset-0 outline-white/10">
+                {% comment %} {% if form.errors %}
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                        {{ form.non_field_errors }}
+                        {% for field in form %}
+                        {% for error in field.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                        {% endfor %}
+                    </div>
+                {% endif %} {% endcomment %}
+                <ul role="list" class="divide-y divide-white/10">
+                    <li class="px-6 py-4">
+                        <div>
+                            <label for="id_product_id" class="block text-sm/6 font-medium text-white">Product ID</label>
+                            <div class="mt-2">
+                                <input id="id_product_id" type="text" name="product_id" placeholder="PRD-1002" value="{{ form.product_id.value|default:'' }}" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
+                            </div>
+                            {% if form.product_id.errors %}
+                                <p class="mt-1 text-sm text-red-400">
+                                {{ form.product_id.errors.0 }}
+                                </p>
+                            {% endif %}
+                        </div>
+                    </li>
+                    <li class="px-6 py-4">
+                        <div>
+                            <label for="id_product_name" class="block text-sm/6 font-medium text-white">Product Name</label>
+                            <div class="mt-2">
+                                <input id="id_product_name" type="text" name="product_name" placeholder="Wireless Bluetooth Headphones" value="{{ form.product_name.value|default:'' }}" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
+                            </div>
+                            {% if form.product_name.errors %}
+                                <p class="mt-1 text-sm text-red-400">
+                                {{ form.product_name.errors.0 }}
+                                </p>
+                            {% endif %}
+                        </div>
+                    </li>
+                    <li class="px-6 py-4">
+                        <div>
+                            <label for="id_category" class="block text-sm/6 font-medium text-white">Category</label>
+                            <div class="mt-2">
+                                <input  
+                                    id="id_category"
+                                    type="text"
+                                    name="category"
+                                    placeholder="Electronics"
+                                    value="{{ form.category.value|default:'' }}" 
+                                    class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                                    required 
+                                />
+                            </div>
+                            {% if form.category.errors %}
+                                <p class="mt-1 text-sm text-red-400">{{ form.category.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </li>
+                    <li class="px-6 py-4">
+                        <div>
+                            <label for="id_price" class="block text-sm/6 font-medium text-white">
+                                Price
+                            </label>
+                            <div class="mt-2">
+                                <input
+                                id="id_price"
+                                type="number"
+                                name="price"
+                                step="0.01"
+                                min="0"
+                                placeholder="2499.99"
+                                value="{{ form.price.value|default:'' }}"
+                                class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-white outline-1 outline-white/10 focus:outline-indigo-500"
+                                required
+                                />
+                            </div>
+                            {% if form.price.errors %}
+                                <p class="mt-1 text-sm text-red-400">{{ form.price.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </li>
+                    <li class="px-6 py-4">
+                        <div>
+                            <label for="id_currency" class="block text-sm/6 font-medium text-white">
+                                Currency
+                            </label>
+                            <div class="mt-2">
+                                <select
+                                id="id_currency"
+                                name="currency"
+                                class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-white outline-1 outline-white/10 focus:outline-indigo-500"
+                                required
+                                >
+                                <option value="" disabled {% if not form.currency.value %}selected{% endif %}>
+                                    Select currency
+                                </option>
+                                {% for value, label in form.fields.currency.choices %}
+                                    <option value="{{ value }}" {% if form.currency.value == value %}selected{% endif %}>
+                                    {{ label }}
+                                    </option>
+                                {% endfor %}
+                                </select>
+                            </div>
+                            {% if form.currency.errors %}
+                                <p class="mt-1 text-sm text-red-400">{{ form.currency.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </li>
+                    <li class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            <input
+                                id="id_in_stock"
+                                type="checkbox"
+                                name="in_stock"
+                                {% if form.in_stock.value %}checked{% endif %}
+                                class="h-4 w-4 rounded border-gray-600 bg-gray-900 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <label for="id_in_stock" class="text-sm font-medium text-white">
+                                Available for sale
+                            </label>
+                        </div>
+                    </li>
+                    <li class="px-6 py-4">
+                        <div>
+                            <label for="id_stock_count" class="block text-sm/6 font-medium text-white">
+                                Stock Count
+                            </label>
+                            <div class="mt-2">
+                                <input
+                                id="id_stock_count"
+                                type="number"
+                                name="stock_count"
+                                min="0"
+                                placeholder="100"
+                                value="{{ form.stock_count.value|default:'' }}"
+                                class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-white outline-1 outline-white/10 focus:outline-indigo-500"
+                                required
+                                />
+                            </div>
+                            {% if form.stock_count.errors %}
+                                <p class="mt-1 text-sm text-red-400">{{ form.stock_count.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </li>
+                    <li class="px-6 py-4">
+                        <div>
+                            <label for="id_product_rating" class="block text-sm/6 font-medium text-white">
+                                Product Rating
+                            </label>
+                            <div class="mt-2">
+                                <input
+                                id="id_product_rating"
+                                type="number"
+                                name="product_rating"
+                                step="0.1"
+                                min="0"
+                                max="5"
+                                placeholder="4.5"
+                                value="{{ form.product_rating.value|default:'' }}"
+                                class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-white outline-1 outline-white/10 focus:outline-indigo-500"
+                                />
+                            </div>
+                            {% if form.product_rating.errors %}
+                                <p class="mt-1 text-sm text-red-400">{{ form.product_rating.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="mt-8 flex justify-end">
+                <button
+                    type="submit"
+                    class="inline-flex items-center rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                >
+                    Create Product
+                </button>
+            </div>
+        </section>
+    </form>
+
+{% endblock %}

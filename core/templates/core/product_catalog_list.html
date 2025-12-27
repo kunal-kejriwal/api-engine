@@ -1,0 +1,127 @@
+{% extends "core/index.html" %}
+
+{% block content %}
+
+<!-- NAVBAR (GLOBAL) -->
+<header class="absolute inset-x-0 top-0 z-50">
+  {% include "core/navbar.html" %}
+</header>
+
+<section class="py-32">
+    <div class="p-8 lg:px-32">
+    <div class="sm:flex sm:items-center">
+        <div class="sm:flex-auto">
+        <h1 class="text-base font-semibold text-white">Product Catalog Details</h1>
+        <p class="mt-2 text-sm text-gray-300"></p>
+        </div>
+        <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+            {% if request.user.profile.plan.can_create_records %}
+                <a href="{% url 'create_product' %}">
+                    <button type="button"
+                    class="block rounded-md bg-indigo-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-400">
+                    Add Product
+                    </button>
+                </a>
+                {% else %}
+                <button type="button"
+                    disabled
+                    class="block rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-gray-300 cursor-not-allowed"
+                    title="Upgrade your plan to add products">
+                    Add Product
+                </button>
+            {% endif %}
+        </div>
+    </div>
+    <div class="mt-8 flow-root">
+        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+            <table class="relative min-w-full divide-y divide-white/15">
+            <thead>
+                <tr>
+                <th scope="col" class="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-white sm:pl-0">Product ID</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-white">Product Name</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-white">Category</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-white">
+                    <a
+                        href="?sort=price&order={% if current_sort == 'price' and current_order == 'asc' %}desc{% else %}asc{% endif %}"
+                        class="flex items-center gap-1 hover:text-indigo-400"
+                        >
+                        Price
+                        {% if current_sort == 'price' %}
+                        {% if current_order == 'asc' %}↑{% else %}↓{% endif %}
+                        {% endif %}
+                    </a>
+                </th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-white">Currency</th> 
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-white">In Stock</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-white">
+                    <a
+                        href="?sort=stock&order={% if current_sort == 'stock' and current_order == 'asc' %}desc{% else %}asc{% endif %}"
+                        class="flex items-center gap-1 hover:text-indigo-400"
+                        >
+                        Stock Count
+                        {% if current_sort == 'stock' %}
+                        {% if current_order == 'asc' %}↑{% else %}↓{% endif %}
+                        {% endif %}
+                    </a>
+                </th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-white">
+                    <a
+                        href="?sort=rating&order={% if current_sort == 'rating' and current_order == 'asc' %}desc{% else %}asc{% endif %}"
+                        class="flex items-center gap-1 hover:text-indigo-400"
+                        >
+                        Product Rating
+                        {% if current_sort == 'rating' %}
+                        {% if current_order == 'asc' %}↑{% else %}↓{% endif %}
+                        {% endif %}
+                    </a>
+                </th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-white">Is Global Record</th>
+                <th scope="col" class="py-3.5 pr-4 pl-3 sm:pr-0">
+                    <span class="sr-only">Edit</span>
+                </th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-white/10">
+                {% for product in product_catalog %}
+                    <tr>
+                    <td class="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-white sm:pl-0">
+                        <a href="{% url 'get_all_products' %}">
+                            {{product.product_id}}
+                        </a>
+                    </td>
+                    <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-400">{{product.product_name}}</td>
+                    {% comment %} <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-400">{{product.username}}</td>  {% endcomment %}
+                    <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-400">{{product.category}}</td>
+                     <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-400">{{product.price}}</td> 
+                    <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-400">{{product.currency}}</td>
+                    <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-400">{{product.in_stock}}</td>
+                    <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-400">{{product.stock_count}}</td>
+                    <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-400">{{product.product_rating}}</td> 
+                    <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-400">{{product.is_platform_owned}}</td>
+                    {% comment %} <td class="py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-0">
+                        <a href="#" class="text-indigo-400 hover:text-indigo-300">Edit<span class="sr-only">, Lindsay Walton</span></a>
+                    </td> {% endcomment %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+        </div>
+                    <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+
+            <span>
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Next</a>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Blogs</title>
+
+    <!-- If Tailwind is already included globally, remove this -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-900">
+
+<!-- Page Container -->
+<div class="max-w-5xl mx-auto px-6 py-12">
+
+    <!-- Page Heading -->
+    <h1 class="text-4xl font-bold mb-10 text-center">
+        Blogs
+    </h1>
+
+    <!-- Blog List -->
+    {% if posts %}
+        <div class="space-y-16">
+
+            {% for post in posts %}
+                <article class="bg-white rounded-lg shadow-md p-8">
+
+                    <!-- Title -->
+                    <h2 class="text-2xl font-bold mb-4">
+                        {{ post.title.rendered }}
+                    </h2>
+
+                    <!-- Featured Image (Safe Access) -->
+                    {% if post.featured_image %}
+                        <img src="{{ post.featured_image }}" />
+                    {% endif %}
+
+                    <!-- Excerpt -->
+                    <div class="prose max-w-none mb-6">
+                        {{ post.excerpt.rendered|safe }}
+                    </div>
+
+                    <!-- Read More -->
+                    {% comment %} <a
+                        href="{% url 'blog_detail' post.slug %}"
+                        class="inline-block text-indigo-600 font-semibold hover:underline"
+                    >
+                        Read more →
+                    </a> {% endcomment %}
+
+                </article>
+            {% endfor %}
+
+        </div>
+    {% else %}
+        <p class="text-center text-gray-500">
+            No blogs available.
+        </p>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

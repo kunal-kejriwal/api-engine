@@ -1,0 +1,84 @@
+{% extends "core/index.html" %}
+
+{% block content %}
+
+<!-- NAVBAR (GLOBAL) -->
+<header class="absolute inset-x-0 top-0 z-50">
+  {% include "core/navbar.html" %}
+</header>
+<section class="flex items-center justify-between p-8 py-32 lg:px-32">
+    <div>
+        <div class="px-4 sm:px-0">
+            <h3 class="text-3xl font-semibold text-white">Account Information</h3>
+        </div>
+        <div class="mt-6">
+            <p class="mt-1 max-w-2xl text-2xl text-gray-400">Profile Information</p>
+            <dl class="grid grid-cols-1 sm:grid-cols-2">
+                <div class="border-t border-white/10 px-4 py-6 sm:col-span-1 sm:px-0">
+                    <dt class="text-sm/6 font-medium text-white">Full name</dt>
+                    <dd class="mt-1 text-sm/6 text-gray-400 sm:mt-2">{{user.first_name}} {{user.last_name}}</dd>
+                </div>
+                <div class="border-t border-white/10 px-4 py-6 sm:col-span-1 sm:px-0">
+                    <dt class="text-sm/6 font-medium text-white">Organization Name</dt>
+                    <dd class="mt-1 text-sm/6 text-gray-400 sm:mt-2">{{profile.organization_name}}</dd>
+                </div>
+                <div class="border-t border-white/10 px-4 py-6 sm:col-span-1 sm:px-0">
+                    <dt class="text-sm/6 font-medium text-white">Email address</dt>
+                    <dd class="mt-1 text-sm/6 text-gray-400 sm:mt-2">{{user.email}}</dd>
+                </div>
+                <div class="border-t border-white/10 px-4 py-6 sm:col-span-1 sm:px-0">
+                    <dt class="text-sm/6 font-medium text-white">Username</dt>
+                    <dd class="mt-1 text-sm/6 text-gray-400 sm:mt-2">{{user.username}}</dd>
+                </div>
+                <div class="border-t border-white/10 px-4 py-6 sm:col-span-2 sm:px-0">
+                    <dt class="text-sm/6 font-medium text-white">About</dt>
+                    <dd class="mt-1 text-sm/6 text-gray-400 sm:mt-2">Fugiat ipsum ipsum deserunt culpa aute sint do nostrud anim incididunt cillum culpa consequat. Excepteur qui ipsum aliquip consequat sint. Sit id mollit nulla mollit nostrud in ea officia proident. Irure nostrud pariatur mollit ad adipisicing reprehenderit deserunt qui eu.</dd>
+                </div>
+            </dl>
+        </div>
+        <div class="mt-6">
+            <p class="mt-1 max-w-2xl text-2xl text-gray-400">Plan Information</p>
+            {% if plan %}
+                <dl class="grid grid-cols-1 sm:grid-cols-2">
+                    <div class="border-t border-white/10 px-4 py-6 sm:col-span-1 sm:px-0">
+                        <dt class="text-sm/6 font-medium text-white">Plan</dt>
+                        <dd class="mt-1 text-sm/6 text-gray-400 sm:mt-2">{{plan.name}}</dd>
+                    </div>
+                    <div class="border-t border-white/10 px-4 py-6 sm:col-span-1 sm:px-0">
+                        <dt class="text-sm/6 font-medium text-white">Monthly API Limit</dt>
+                        <dd class="mt-1 text-sm/6 text-gray-400 sm:mt-2">{{plan.monthly_api_limit}}</dd>
+                    </div>
+                    <div class="border-t border-white/10 px-4 py-6 sm:col-span-1 sm:px-0">
+                        <dt class="text-sm/6 font-medium text-white">API Calls Utilized</dt>
+                        <dd class="mt-1 text-sm/6 text-gray-400 sm:mt-2">{{profile.api_calls_used}}</dd>
+                    </div>
+                    <div class="border-t border-white/10 px-4 py-6 sm:col-span-1 sm:px-0">
+                        <dt class="text-sm/6 font-medium text-white">API Calls Remaining</dt>
+                        <dd class="mt-1 text-sm/6 text-gray-400 sm:mt-2">{{ api_remaining }}</dd>
+                    </div>
+                    {% comment %} <div class="border-t border-white/10 px-4 py-6 sm:col-span-1 sm:px-0">
+                        <dt class="text-sm/6 font-medium text-white">API Resets At</dt>
+                        <dd class="mt-1 text-sm/6 text-gray-400 sm:mt-2">{{profile.api_reset_at}}</dd>
+                    </div> {% endcomment %}
+                    <div class="border-t border-white/10 px-4 py-6 sm:col-span-1 sm:px-0">
+                        <dt class="text-sm/6 font-medium text-white">Record Creation Limit</dt>
+                        <dd class="mt-1 text-sm/6 text-gray-400 sm:mt-2">{{max_records}}</dd>
+                    </div>
+                    <div class="border-t border-white/10 px-4 py-6 sm:col-span-1 sm:px-0">
+                        <dt class="text-sm/6 font-medium text-white">Total Records Created</dt>
+                        <dd class="mt-1 text-sm/6 text-gray-400 sm:mt-2">{{ current_records_created }}</dd>
+                    </div>
+                    <div class="border-t border-white/10 px-4 py-6 sm:col-span-1 sm:px-0">
+                        <dt class="text-sm/6 font-medium text-white">Record Creation Limit Remaining </dt>
+                        <dd class="mt-1 text-sm/6 text-gray-400 sm:mt-2">{{ records_remaining }}</dd>
+                    </div>
+                </dl>
+            {% else %}
+                <p>No plan assigned.</p>
+            {% endif %}
+        </div>
+    </div>
+
+</section>
+
+{% endblock %}

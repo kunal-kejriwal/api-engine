@@ -1,0 +1,29 @@
+<h2 class="text-xl font-semibold">API Authentication</h2>
+
+<form method="post">
+  {% csrf_token %}
+  <button class="btn btn-primary">
+    Generate Access Token
+  </button>
+</form>
+
+{% if access_token %}
+  <div class="mt-6">
+    <label>Access Token</label>
+    <textarea readonly class="token-box">{{ access_token }}</textarea>
+    <button onclick="copyToken('{{ access_token }}')">Copy</button>
+    <p class="text-sm text-gray-500">Expires in 30 minutes</p>
+  </div>
+
+  <div class="mt-4">
+    <label>Refresh Token</label>
+    <textarea readonly class="token-box">{{ refresh_token }}</textarea>
+  </div>
+{% endif %}
+
+<script>
+function copyToken(token) {
+  navigator.clipboard.writeText(token);
+  alert("Token copied!");
+}
+</script>

@@ -28,7 +28,11 @@ SECRET_KEY = 'django-insecure-9eeoqpzd6z#g*^_$_-14@hop6tz+*plhqx2+7&q%^^din23o@s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "apiengine.com",
+    "www.apiengine.com",
+    "65.1.92.237"
+]
 
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "/core/"

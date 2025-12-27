@@ -29,9 +29,10 @@ SECRET_KEY = 'django-insecure-9eeoqpzd6z#g*^_$_-14@hop6tz+*plhqx2+7&q%^^din23o@s
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "apiengine.com",
-    "www.apiengine.com",
-    "65.1.92.237"
+    "theapiengine.com",
+    "www.theapiengine.com",
+    "65.1.92.237",
+    "127.0.0.1"
 ]
 
 LOGIN_URL = "login"
@@ -201,4 +202,4 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD =  os.getenv("EMAIL_HOST_PASSWORD") # NOT gmail password
 
 DEFAULT_FROM_EMAIL = "kunalupwork0@gmail.com"
-SITE_URL = "http://127.0.0.1:8000"
+SITE_URL = "https://theapiengine.com"

@@ -29,8 +29,8 @@ SECRET_KEY = 'django-insecure-9eeoqpzd6z#g*^_$_-14@hop6tz+*plhqx2+7&q%^^din23o@s
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "apiengine.com",
-    "www.apiengine.com",
+    "theapiengine.com",
+    "www.theapiengine.com",
     "65.1.92.237"
 ]
 

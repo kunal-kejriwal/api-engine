@@ -1,0 +1,39 @@
+{% extends "core/index.html" %}
+{% block content %}
+
+<div class="max-w-xl mx-auto px-6 py-8">
+  <h1 class="text-xl font-semibold text-white mb-6">
+    Add Field to {{ custom_object.name }}
+  </h1>
+
+  <form method="POST" class="space-y-4">
+    {% csrf_token %}
+
+    <input name="name" placeholder="Field Label"
+      class="w-full px-3 py-2 rounded bg-gray-800 text-white" required>
+
+    <input name="api_name" placeholder="field_api_name"
+      class="w-full px-3 py-2 rounded bg-gray-800 text-white" required>
+
+    <select name="data_type"
+      class="w-full px-3 py-2 rounded bg-gray-800 text-white">
+      {% for key, label in custom_object.fields.model.DATA_TYPES %}
+        <option value="{{ key }}">{{ label }}</option>
+      {% endfor %}
+    </select>
+
+    <label class="block text-gray-300">
+      <input type="checkbox" name="is_required"> Required
+    </label>
+
+    <label class="block text-gray-300">
+      <input type="checkbox" name="is_unique"> Unique
+    </label>
+
+    <button class="bg-indigo-600 px-4 py-2 rounded text-white">
+      Add Field
+    </button>
+  </form>
+</div>
+
+{% endblock %}

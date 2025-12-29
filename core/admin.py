@@ -1,11 +1,22 @@
 from django.contrib import admin
-from .models import CustomerProfile, ProductCatalog, OrderTransaction, SystemLog, FeatureUsageAnalytics, UserProfile
+from .models import CustomerProfile, ProductCatalog, OrderTransaction, SystemLog, FeatureUsageAnalytics, UserProfile, CustomObject, CustomField, CustomFieldValue, CustomObjectRecord, EmailVerificationToken, PasswordResetToken
 from .plans import Plan
 
 # Register your models here.
 admin.site.register(CustomerProfile)
 admin.site.register(OrderTransaction)
 admin.site.register(FeatureUsageAnalytics)
+admin.site.register(EmailVerificationToken)
+admin.site.register(PasswordResetToken)
+admin.site.register(CustomField)
+admin.site.register(CustomFieldValue)
+admin.site.register(CustomObjectRecord)
+
+@admin.register(CustomObject)
+class SystemLogAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+    )
 
 @admin.register(SystemLog)
 class SystemLogAdmin(admin.ModelAdmin):

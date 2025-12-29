@@ -1,0 +1,74 @@
+{% extends "core/index.html" %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-900 px-4">
+  <div class="w-full max-w-md bg-gray-800 rounded-xl shadow-lg p-8 text-center">
+
+    <!-- Icon -->
+    <div class="flex justify-center mb-4">
+      <svg class="h-14 w-14 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          d="M3 8l9 6 9-6M4 6h16a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V7a1 1 0 011-1z" />
+      </svg>
+    </div>
+
+    <!-- Title -->
+    <h1 class="text-2xl font-semibold text-white mb-2">
+      Verify your email
+    </h1>
+
+    <p class="text-gray-400 text-sm mb-6">
+      We’ve sent a verification link to your email address.
+      Please verify your email to continue using your account.
+    </p>
+
+    <!-- Django Messages -->
+    {% if messages %}
+      <div class="mb-4 space-y-2">
+        {% for message in messages %}
+          <div class="text-sm rounded-md px-4 py-2
+            {% if message.tags == 'success' %}
+              bg-green-900 text-green-300
+            {% elif message.tags == 'error' %}
+              bg-red-900 text-red-300
+            {% else %}
+              bg-gray-700 text-gray-300
+            {% endif %}
+          ">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- Info Box -->
+    <div class="bg-gray-700/40 border border-gray-600 rounded-lg p-4 text-sm text-gray-300 mb-6">
+      Didn’t receive the email?  
+      Check your spam folder or resend the verification email.
+    </div>
+
+    <!-- Actions -->
+    <div class="space-y-3">
+      <a
+        href="{% url 'resend_verification_email' %}"
+        class="block w-full rounded-lg bg-indigo-600 hover:bg-indigo-500
+               text-white font-medium py-2 transition"
+      >
+        Resend verification email
+      </a>
+
+      <form method="post" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button
+        type="submit"
+        class="text-sm text-gray-400 hover:text-gray-200 transition"
+      >
+        Log out
+      </button>
+    </form>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

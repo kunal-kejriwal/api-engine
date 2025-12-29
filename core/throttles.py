@@ -1,6 +1,5 @@
 from rest_framework.throttling import BaseThrottle
 from django.utils import timezone
-from django.db.models import F
 from dateutil.relativedelta import relativedelta
 
 class PlanBasedUserThrottle(BaseThrottle):
@@ -23,19 +22,15 @@ class PlanBasedUserThrottle(BaseThrottle):
 
         now = timezone.now()
 
-        # 🔁 Reset monthly quota
+        # 🔁 Reset monthly quota window
         if not profile.api_reset_at or now >= profile.api_reset_at:
             profile.api_calls_used = 0
             profile.api_reset_at = now + relativedelta(months=1)
             profile.save(update_fields=["api_calls_used", "api_reset_at"])
 
+        # ❌ Do NOT increment here
         if profile.api_calls_used >= profile.plan.monthly_api_limit:
             return False
-
-        # ✅ Atomic increment
-        profile.__class__.objects.filter(
-            pk=profile.pk
-        ).update(api_calls_used=F("api_calls_used") + 1)
 
         return True
 

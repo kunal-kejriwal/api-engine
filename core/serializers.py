@@ -1,7 +1,8 @@
 from rest_framework import serializers
-from .models import CustomerProfile, ProductCatalog, OrderTransaction, SystemLog, FeatureUsageAnalytics
+from .models import CustomerProfile, ProductCatalog, OrderTransaction, SystemLog, FeatureUsageAnalytics, CustomObject, CustomField
 from django.db.models import Count
 from core.validators import enforce_record_quota
+from .mixins import RecordQuotaValidationMixin
 
 #-------------------CustomerProfile Serializer Starts---------------
 class CustomerProfileSerializer(serializers.ModelSerializer):
@@ -21,7 +22,8 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
 #-------------------CustomerProfile Serializer Ends---------------
 
 #-------------------ProductCatalogSerializer Serializer Starts---------------
-class ProductCatalogSerializer(serializers.ModelSerializer):
+class ProductCatalogSerializer(RecordQuotaValidationMixin, serializers.ModelSerializer):
+    
     class Meta:
         model = ProductCatalog
         fields = [
@@ -35,17 +37,10 @@ class ProductCatalogSerializer(serializers.ModelSerializer):
             "product_rating",
         ]       
     
-    def validate(self, attrs):
-        request = self.context["request"]
-        user = request.user
-
-        enforce_record_quota(user)
-
-        return attrs
 #-------------------ProductCatalogSerializer Ends---------------
 
 #-------------------OrderTransactionSerializer Starts---------------
-class OrderTransactionSerializer(serializers.ModelSerializer):
+class OrderTransactionSerializer(RecordQuotaValidationMixin, serializers.ModelSerializer):
     class Meta:
         model = OrderTransaction
         fields = [
@@ -91,3 +86,26 @@ class FeatureUsageAnalyticsSerializer(serializers.ModelSerializer):
             'event_timestamp',
         ]
 #-------------------FeatureUsageAnalyticsSerializer  Ends---------------
+
+
+class CustomObjectSerializer(RecordQuotaValidationMixin, serializers.ModelSerializer):
+    class Meta:
+        model = CustomObject
+        fields = ["id", "name", "api_name", "description"]
+
+
+class CustomFieldSerializer(RecordQuotaValidationMixin, serializers.ModelSerializer):
+    class Meta:
+        model = CustomField
+        fields = [
+            "id",
+            "name",
+            "api_name",
+            "data_type",
+            "is_required",
+            "is_unique",
+            "default_value",
+            "min_value",
+            "max_value",
+            "regex",
+        ]

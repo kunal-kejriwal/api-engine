@@ -27,8 +27,10 @@ urlpatterns = [
     path('core/', include('core.urls')),
     path('api-auth/', include('rest_framework.urls')),
     path('blogs/', include('blogs.urls')),
-    path('', include('core.urls')),
+    path('', include('core.homepage_urls')),
+    path('auth/', include('core.api_urls')),
     
-    path("auth/api/token/", TokenObtainPairView.as_view()),
-    path("auth/api/token/refresh/", TokenRefreshView.as_view()),
+    
+    path("rest/auth/api/token/", TokenObtainPairView.as_view()),
+    path("rest/auth/api/token/refresh/", TokenRefreshView.as_view()),
 ]

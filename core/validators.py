@@ -1,6 +1,6 @@
 from django.apps import apps
 from rest_framework import serializers
-from core.plan_limits import PLAN_RECORD_LIMITS, QUOTA_MODELS
+from core.plan_limits import PLAN_RECORD_LIMITS, QUOTA_MODELS, QUOTA_MODEL_OWNERSHIP
 
 
 def enforce_record_quota(user, incoming_count=1):
@@ -24,13 +24,24 @@ def enforce_record_quota(user, incoming_count=1):
     total_existing = 0
 
     for model_path in QUOTA_MODELS:
-        app_label, model_name = model_path.split(".")
-        model = apps.get_model(app_label, model_name)
+        try:
+            app_label, model_name = model_path.rsplit(".", 1)
+            model = apps.get_model(app_label, model_name)
 
-        # 🔑 THIS is where your SoftDeleteManager shines
-        total_existing += model.objects.filter(
-            created_by=user
-        ).count()
+            owner_field = QUOTA_MODEL_OWNERSHIP.get(model_path)
+
+            if not owner_field:
+                continue  # Skip models without ownership definition
+
+            if not hasattr(model, owner_field):
+                continue  # Safety check
+
+            total_records += model.objects.filter(
+                **{owner_field: user}
+            ).count()
+        except Exception as e:
+            print(f"[Quota Error] {model_path}: {e}")
+            continue
 
     if total_existing + incoming_count > max_records:
         raise serializers.ValidationError(

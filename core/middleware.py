@@ -4,6 +4,8 @@ from django.utils.timezone import now
 from django.contrib.auth.models import AnonymousUser
 from core.models import SystemLog
 from django.db import models
+from django.shortcuts import redirect
+from django.urls import reverse
 
 class PlanNamespaceMiddleware:
     def __init__(self, get_response):
@@ -74,7 +76,7 @@ class APILoggingMiddleware:
                 created_by=user,  # ✅ THIS is the fix
                 service_name="API",
                 log_level="INFO" if response.status_code < 400 else "ERROR",
-                message=message,
+                message=f"{request.method} {request.path}",
                 request_path=request.path,
                 http_status=response.status_code,
                 response_time_ms=duration_ms,
@@ -83,3 +85,61 @@ class APILoggingMiddleware:
         except Exception:
             # logging must never break requests
             pass
+        
+
+class EmailVerifiedAccessMiddleware:
+
+    PUBLIC_PREFIXES = (
+        "/blogs/",
+    )
+
+    AUTH_PREFIXES = (
+        "/auth/",
+        "/rest/auth/",
+    )
+
+    API_PREFIXES = (
+    "/api/",
+    "/core/api/",
+    "/core/v1/",
+)
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        path = request.path
+
+    # 🚨 CRITICAL: Skip API routes entirely
+        if path.startswith(self.API_PREFIXES):
+            return self.get_response(request)
+
+        # 1️⃣ Admin
+        if path.startswith("/admin/"):
+            return self.get_response(request)
+
+        # 2️⃣ Homepage
+        if path == "/":
+            return self.get_response(request)
+
+        # 3️⃣ Public
+        if path.startswith(self.PUBLIC_PREFIXES):
+            return self.get_response(request)
+
+        # 4️⃣ Anonymous users (browser only)
+        if not request.user.is_authenticated:
+            if path.startswith(self.AUTH_PREFIXES):
+                return self.get_response(request)
+
+            return redirect(settings.LOGIN_URL)
+
+        # 5️⃣ Logged in but NOT email verified (browser only)
+        profile = getattr(request.user, "profile", None)
+
+        if profile and not profile.is_email_verified:
+            if path.startswith(self.AUTH_PREFIXES):
+                return self.get_response(request)
+
+            return redirect("/auth/confirm-email/")
+
+        return self.get_response(request)

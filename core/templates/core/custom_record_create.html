@@ -1,0 +1,31 @@
+{% extends "core/index.html" %}
+{% block content %}
+
+<div class="max-w-3xl mx-auto px-6 py-8">
+  <h1 class="text-xl font-semibold text-white mb-6">
+    Create {{ object.name }} Record
+  </h1>
+
+  <form method="POST" class="space-y-4">
+    {% csrf_token %}
+
+    {% for field in fields %}
+      <div>
+        <label class="block text-gray-300 text-sm">
+          {{ field.name }}
+        </label>
+
+        <input
+          name="{{ field.api_name }}"
+          class="w-full px-3 py-2 rounded bg-gray-800 text-white"
+        >
+      </div>
+    {% endfor %}
+
+    <button class="bg-green-600 px-4 py-2 rounded text-white">
+      Save Record
+    </button>
+  </form>
+</div>
+
+{% endblock %}

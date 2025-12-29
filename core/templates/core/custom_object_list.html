@@ -1,0 +1,38 @@
+{% extends "core/index.html" %}
+{% block content %}
+
+<div class="max-w-6xl mx-auto px-6 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-semibold text-white">Custom Objects</h1>
+
+    {% if current_count < max_objects %}
+      <a href="{% url 'custom_object_create' %}"
+         class="bg-indigo-600 text-white px-4 py-2 rounded">
+        + Create Object
+      </a>
+    {% else %}
+      <button disabled
+        class="bg-gray-600 text-gray-300 px-4 py-2 rounded cursor-not-allowed">
+        Object Limit Reached
+      </button>
+    {% endif %}
+  </div>
+
+  <p class="text-gray-400 mb-4">
+    {{ current_count }} / {{ max_objects }} objects used
+  </p>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {% for obj in objects %}
+      <a href="{% url 'custom_object_detail' obj.id %}"
+         class="block p-4 bg-gray-800 rounded hover:bg-gray-700">
+        <h2 class="text-lg text-white font-medium">{{ obj.name }}</h2>
+        <p class="text-sm text-gray-400">{{ obj.api_name }}</p>
+      </a>
+    {% empty %}
+      <p class="text-gray-400">No custom objects created yet.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

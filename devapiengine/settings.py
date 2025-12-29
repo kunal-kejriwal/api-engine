@@ -35,9 +35,9 @@ ALLOWED_HOSTS = [
     "127.0.0.1"
 ]
 
-LOGIN_URL = "login"
-LOGIN_REDIRECT_URL = "/core/"
-LOGOUT_REDIRECT_URL = "/"
+LOGIN_URL = '/auth/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 # Application definition
 
@@ -63,6 +63,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    "core.middleware.EmailVerifiedAccessMiddleware",
     'core.middleware.APILoggingMiddleware',
     # "core.middleware.PlanNamespaceMiddleware",
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -74,7 +75,7 @@ ROOT_URLCONF = 'devapiengine.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        "DIRS": [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

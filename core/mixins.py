@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 import random
 from django.utils.timezone import now
+from core.validators import enforce_record_quota
 
 
 User = settings.AUTH_USER_MODEL
@@ -93,3 +94,19 @@ class SoftDeleteModel(models.Model):
         self.is_deleted = False
         self.deleted_at = None
         self.save(update_fields=["is_deleted", "deleted_at"])
+        
+
+class RecordQuotaValidationMixin:
+    def validate(self, attrs):
+        request = self.context.get("request")
+
+        if not request:
+            return attrs
+
+        if request.method == "POST":
+            enforce_record_quota(
+                request.user,
+                incoming_count=1
+            )
+
+        return attrs

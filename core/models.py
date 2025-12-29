@@ -6,6 +6,7 @@ from .mixins import PublicIDMixin, SoftDeleteModel, OwnedModel
 from django.utils.timezone import now
 from dateutil.relativedelta import relativedelta
 from django.core.exceptions import PermissionDenied
+# from .permissions import can_add_field_to_object, can_create_custom_object
 # Create your models here.
 
 #------------------------------------------ User Profile Model Starts ------------------------------------------
@@ -186,7 +187,7 @@ class SystemLog(PublicIDMixin, SoftDeleteModel, OwnedModel):
     message = models.TextField()
     request_path = models.CharField(max_length=255)
     http_status = models.PositiveSmallIntegerField()
-    response_time_ms = models.PositiveIntegerField()
+    response_time_ms = models.PositiveIntegerField(null=True, blank=True)
     logged_at = models.DateTimeField(auto_now_add=True)
     user_ip_address = models.GenericIPAddressField(null=True)
 
@@ -211,3 +212,124 @@ class FeatureUsageAnalytics(PublicIDMixin, SoftDeleteModel, OwnedModel):
         return self.feature_name
     
 #------------------------------------------ FeatureUsageAnalytics Model Ends ------------------------------------------
+
+
+# Create your models here.
+class CustomObject(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    tenant = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="custom_objects",
+    )
+
+    name = models.CharField(max_length=100)
+    api_name = models.SlugField(max_length=50)
+
+    description = models.TextField(blank=True, null=True)
+
+    is_active = models.BooleanField(default=True)
+    is_system = models.BooleanField(default=False)
+
+    max_records = models.PositiveIntegerField(default=1000)
+    allow_api_access = models.BooleanField(default=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ("tenant", "api_name")
+
+    def __str__(self):
+        return f"{self.api_name}"
+    
+    # def clean(self):
+    #     if not can_create_custom_object(self.tenant):
+    #         raise ValidationError("Custom Object limit exceeded.")
+    
+
+class CustomField(models.Model):
+    DATA_TYPES = [
+        ("STRING", "String"),
+        ("NUMBER", "Number"),
+        ("DECIMAL", "Decimal"),
+        ("BOOLEAN", "Boolean"),
+        ("DATE", "Date"),
+        ("DATETIME", "Datetime"),
+        ("EMAIL", "Email"),
+        ("JSON", "JSON"),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    custom_object = models.ForeignKey(
+        CustomObject,
+        on_delete=models.CASCADE,
+        related_name="fields",
+    )
+
+    name = models.CharField(max_length=100)
+    api_name = models.SlugField(max_length=50)
+
+    data_type = models.CharField(max_length=20, choices=DATA_TYPES)
+
+    is_required = models.BooleanField(default=False)
+    is_unique = models.BooleanField(default=False)
+    is_indexed = models.BooleanField(default=False)
+
+    default_value = models.TextField(blank=True, null=True)
+    min_value = models.DecimalField(
+        max_digits=18, decimal_places=6, null=True, blank=True
+    )
+    max_value = models.DecimalField(
+        max_digits=18, decimal_places=6, null=True, blank=True
+    )
+    regex = models.TextField(blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("custom_object", "api_name")
+
+    def __str__(self):
+        return f"{self.custom_object.api_name}.{self.api_name}"
+
+
+class CustomObjectRecord(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    tenant = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="custom_records",
+    )
+
+    object_api_name = models.CharField(max_length=50)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class CustomFieldValue(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    record = models.ForeignKey(
+        CustomObjectRecord,
+        on_delete=models.CASCADE,
+        related_name="field_values",
+    )
+
+    field_api_name = models.CharField(max_length=50)
+
+    value_string = models.TextField(null=True, blank=True)
+    value_number = models.BigIntegerField(null=True, blank=True)
+    value_decimal = models.DecimalField(
+        max_digits=18, decimal_places=6, null=True, blank=True
+    )
+    value_boolean = models.BooleanField(null=True, blank=True)
+    value_date = models.DateField(null=True, blank=True)
+    value_datetime = models.DateTimeField(null=True, blank=True)
+    value_json = models.JSONField(null=True, blank=True)
+    
+    
+    
+

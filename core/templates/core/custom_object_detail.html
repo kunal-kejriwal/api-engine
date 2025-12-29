@@ -1,0 +1,53 @@
+{% extends "core/index.html" %}
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-6 py-8">
+
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-semibold text-white">
+      {{ object.name }} ({{ object.api_name }})
+    </h1>
+
+    <a href="{% url 'custom_record_create' object.id %}"
+       class="bg-green-600 px-4 py-2 rounded text-white">
+      + Add Record
+    </a>
+  </div>
+
+  <!-- Fields -->
+  <div class="mb-8">
+    <div class="flex justify-between items-center mb-2">
+      <h2 class="text-lg text-white">Fields</h2>
+
+      {% if fields|length < max_fields %}
+        <a href="{% url 'custom_field_create' object.id %}"
+           class="text-indigo-400 text-sm">
+          + Add Field
+        </a>
+      {% else %}
+        <span class="text-gray-400 text-sm">Field limit reached</span>
+      {% endif %}
+    </div>
+
+    <ul class="bg-gray-800 rounded divide-y divide-gray-700">
+      {% for field in fields %}
+        <li class="p-3 text-gray-300">
+          {{ field.api_name }} ({{ field.data_type }})
+        </li>
+      {% empty %}
+        <li class="p-3 text-gray-400">No fields defined.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Records -->
+  <div>
+    <h2 class="text-lg text-white mb-2">Records</h2>
+    <p class="text-gray-400">
+      {{ records.count }} records
+    </p>
+  </div>
+
+</div>
+
+{% endblock %}
